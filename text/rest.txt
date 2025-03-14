@@ -1,0 +1,34 @@
+REST API za HandyDandy:
+
+1. GET /api/tutorials
+   - Opis: Pridobi seznam vseh vodičev.
+   - Vhod: Ni potrebno.
+   - Izhod: JSON seznam vodičev.
+   - Primer:
+     GET /api/tutorials
+     Odgovor: 
+     [
+       { "id": 1, "title": "Popravilo pipe", "url": "https://..." },
+       { "id": 2, "title": "Menjava žarnice", "url": "https://..." }
+     ]
+
+2. GET /api/tutorials/:id
+   - Opis: Pridobi podrobnosti vodiča.
+   - Vhod: ID vodiča v URL.
+   - Izhod: JSON objekt vodiča.
+
+3. POST /api/tutorials
+   - Opis: Dodaj nov vodič.
+   - Vhod: JSON objekt vodiča.
+   - Izhod: ID novo dodanega vodiča.
+
+4. DELETE /api/tutorials/:id
+   - Opis: Izbriši vodič.
+   - Vhod: ID vodiča v URL.
+   - Izhod: Potrditev brisanja.
+
+5. GET /api/categories
+   - Opis: Pridobi seznam kategorij.
+
+6. GET /api/comments/:tutorialId
+   - Opis: Pridobi komentarje za vodič.
