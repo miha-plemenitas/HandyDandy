@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="sl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Podatkovni Model - HandyDandy</title>
+  </head>
+  <body>
+    <h1>Podatkovni Model</h1>
+    <p>
+      HandyDandy hrani podatke o uporabnikih, video vodičih, kategorijah,
+      komentarjih in orodjih/materialih, potrebnih za popravila.
+    </p>
+
+    <h2>Glavne entitete</h2>
+    <ul>
+      <li>
+        <b>Uporabnik (User)</b>: ID, ime, e-pošta, datum registracije, shranjeni
+        vodiči, zgodovina popravil.
+      </li>
+      <li>
+        <b>Vodič (Tutorial)</b>: ID, naslov, opis, video URL, kategorija, avtor,
+        zahtevana orodja, povprečna ocena.
+      </li>
+      <li><b>Kategorija (Category)</b>: ID, ime.</li>
+      <li>
+        <b>Komentar (Comment)</b>: ID, vsebina, avtor, vodič, datum objave.
+      </li>
+      <li>
+        <b>Orodje/Material (Tool/Material)</b>: ID, ime, opis, priporočeni
+        prodajalci.
+      </li>
+    </ul>
+
+    <h2>Relacije med entitetami</h2>
+    <ul>
+      <li>En uporabnik lahko shrani več vodičev.</li>
+      <li>En vodič pripada eni kategoriji.</li>
+      <li>En uporabnik lahko napiše več komentarjev na različne vodiče.</li>
+      <li>Vsak vodič vsebuje seznam orodij in materialov.</li>
+    </ul>
+
+    <h2>ER Diagram</h2>
+    <img src="/HandyDandy.png" alt="ER Diagram" />
+
+    <h2>Podatkovna sinhronizacija</h2>
+    <p>
+      <b>Vedno dostopni na napravi:</b> Seznam shranjenih vodičev, kategorije.
+    </p>
+    <p>
+      <b>Samo na strežniku:</b> Uporabniški podatki, komentarji, ocene vodičev.
+    </p>
+    <p>
+      <b>Sinhronizirani podatki:</b> Seznam vodičev (ob osvežitvi aplikacije),
+      seznam orodij/materialov (ko uporabnik odpre vodič).
+    </p>
+  </body>
+</html>

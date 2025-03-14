@@ -32,3 +32,17 @@ REST API za HandyDandy:
 
 6. GET /api/comments/:tutorialId
    - Opis: Pridobi komentarje za vodič.
+
+7. POST /api/comments
+   - Opis: Dodaj komentar k vodiču.
+   - Vhod: JSON objekt komentarja (uporabnik, vodič, vsebina).
+   - Izhod: ID novo dodanega komentarja.
+
+8. GET /api/tools
+   - Opis: Pridobi seznam orodij in materialov.
+
+9. GET /api/tools/:id
+   - Opis: Pridobi podrobnosti določenega orodja/materiala.
+
+10. GET /api/user/:id/saved-tutorials
+   - Opis: Pridobi seznam shranjenih vodičev za določenega uporabnika.

@@ -5,7 +5,7 @@ const path = require("path");
 const server = http.createServer((req, res) => {
   if (req.url === "/podatkovni-model/") {
     fs.readFile(
-      path.join(__dirname, "../text/podatkovni-model.html"),
+      path.join(__dirname, "../Description/podatkovni-model.html"),
       (err, data) => {
         if (err) {
           res.writeHead(500, { "Content-Type": "text/plain" });
@@ -17,12 +17,26 @@ const server = http.createServer((req, res) => {
       }
     );
   } else if (req.url === "/REST/") {
-    fs.readFile(path.join(__dirname, "../text/rest.txt"), (err, data) => {
+    fs.readFile(
+      path.join(__dirname, "../Description/rest.txt"),
+      (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain" });
+          res.end("Napaka pri branju tekstovne datoteke.");
+        } else {
+          res.writeHead(200, { "Content-Type": "text/plain" });
+          res.end(data);
+        }
+      }
+    );
+  } else if (req.url === "/HandyDandy.png") {
+    const imgPath = path.join(__dirname, "../Description/HandyDandy.png");
+    fs.readFile(imgPath, (err, data) => {
       if (err) {
-        res.writeHead(500, { "Content-Type": "text/plain" });
-        res.end("Napaka pri branju tekstovne datoteke.");
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Slika ni najdena.");
       } else {
-        res.writeHead(200, { "Content-Type": "text/plain" });
+        res.writeHead(200, { "Content-Type": "image/png" });
         res.end(data);
       }
     });
