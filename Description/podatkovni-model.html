@@ -44,15 +44,34 @@
     <img src="/HandyDandy.png" alt="ER Diagram" />
 
     <h2>Podatkovna sinhronizacija</h2>
-    <p>
-      <b>Vedno dostopni na napravi:</b> Seznam shranjenih vodičev, kategorije.
-    </p>
-    <p>
-      <b>Samo na strežniku:</b> Uporabniški podatki, komentarji, ocene vodičev.
-    </p>
-    <p>
-      <b>Sinhronizirani podatki:</b> Seznam vodičev (ob osvežitvi aplikacije),
-      seznam orodij/materialov (ko uporabnik odpre vodič).
-    </p>
+
+    <h3>Vedno dostopni na napravi (lokalna shramba)</h3>
+    <ul>
+      <li>Seznam kategorij vodičev.</li>
+      <li>Uporabnikovi shranjeni vodiči (za offline dostop).</li>
+      <li>Podatki o napredku uporabnika pri ogledanih vodičih.</li>
+    </ul>
+
+    <h3>Samo na strežniku</h3>
+    <ul>
+      <li>Uporabniški podatki (ime, e-pošta, zgodovina uporabe).</li>
+      <li>Komentarji vodičev.</li>
+      <li>Ocene vodičev.</li>
+    </ul>
+
+    <h3>Sinhronizirani podatki</h3>
+    <ul>
+      <li>
+        Seznam vodičev (sinhronizacija ob odpiranju aplikacije ali ročni
+        osvežitvi).
+      </li>
+      <li>
+        Seznam orodij/materialov (sinhronizira se ob odpiranju določenega
+        vodiča).
+      </li>
+      <li>
+        Uporabnikovi shranjeni vodiči (sinhronizirajo se ob vsaki spremembi).
+      </li>
+    </ul>
   </body>
 </html>
