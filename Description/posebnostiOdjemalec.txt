@@ -1,0 +1,45 @@
+﻿Tehnične zahteve aplikacije HandyDandy
+
+1. Arhitektura in tehnologije
+- Aplikacija bo razvita kot progresivna spletna aplikacija (PWA), kar omogoča delovanje brez povezave
+- Strežnik bo implementiran v Node.js
+- Podatkovna baza: MongoDB ali Firebase Firestore
+- Frontend bo zgrajen s pomočjo HTML, CSS in JavaScript
+
+2. Implementacija posameznih funkcionalnosti
+
+Dostop brez povezave
+- LocalStorage se bo uporabljal za hranjenje shranjenih vodičev
+
+Video vodiči
+- Video posnetki bodo dostopni prek URL povezav na zunanje storitve
+
+Glasovno iskanje
+- Implementacija bo uporabljala Web Speech API, ki omogoča prepoznavo glasu v brskalniku
+
+Uporabniški računi in avtentikacija
+- Uporabljena bo avtentikacija prek JWT (JSON Web Token).
+
+Sinhronizacija podatkov
+- Uporabnikovi shranjeni vodiči se bodo sinhronizirali ob vsaki spremembi
+- Seznam vodičev in orodij/materialov se bo sinhroniziral ob odpiranju aplikacije
+
+Komentiranje in ocenjevanje vodičev
+- Vsak komentar bo vezan na uporabniški račun
+- Komentarji se bodo shranjevali v podatkovni bazi
+
+3. Zahteve glede naprav
+- Kamere: Potrebna za snemanje lastnih vodičev
+- Mikrofona: Potreben za glasovno iskanje
+- Shramba naprave: Potrebna za lokalno shranjevanje vodičev za dostop brez povezave
+
+4. Varnostne zahteve
+- HTTPS povezava za zaščito uporabniških podatkov
+- Validacija vhodnih podatkov za preprečevanje napadov
+
+5. Zahteve glede strežnika
+- Node.js strežnik bo omogočal hitro obdelavo zahtevkov
+- API bo zasnovan kot RESTful API
+- Strežnik bo gostovan na cloud storitvi (npr. AWS, Render)
+
+

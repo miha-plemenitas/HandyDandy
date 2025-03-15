@@ -40,7 +40,46 @@ const server = http.createServer((req, res) => {
         res.end(data);
       }
     });
-  } else {
+  } else if (req.url === "/funkcionalnosti-odjemalca/") {
+    fs.readFile(
+      path.join(__dirname, "../Description/odjemalec.html"),
+      (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain,  charset=UTF-8" });
+          res.end("Napaka pri branju HTML datoteke.");
+        } else {
+          res.writeHead(200, { "Content-Type": "text/html,  charset=UTF-8" });
+          res.end(data);
+        }
+      }
+    );
+  } else if (req.url === "/posebnosti-odjemalca/") {
+    fs.readFile(
+      path.join(__dirname, "../Description/posebnostiOdjemalec.txt"),
+      (err, data) => {
+        if (err) {
+          res.writeHead(500, { "Content-Type": "text/plain,  charset=UTF-8" });
+          res.end("Napaka pri branju tekstovne datoteke.");
+        } else {
+          res.writeHead(200, { "Content-Type": "text/plain,  charset=UTF-8" });
+          res.end(data);
+        }
+      }
+    );
+  } else if (req.url === "/uml-odjemalca/") {
+    const imgPath = path.join(__dirname, "../Description/uml.png");
+    fs.readFile(imgPath, (err, data) => {
+      if (err) {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end("Slika ni najdena.");
+      } else {
+        res.writeHead(200, { "Content-Type": "image/png" });
+        res.end(data);
+      }
+    });
+  }
+
+  else {
     res.writeHead(404, { "Content-Type": "text/plain" });
     res.end("Stran ne obstaja.");
   }

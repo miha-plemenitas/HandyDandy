@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funkcionalnosti HandyDandy</title>
+</head>
+<body>
+    <h1>Funkcionalnosti aplikacije HandyDandy</h1>
+    
+    <h2>1. Brskanje in iskanje vodičev</h2>
+    <ul>
+        <li>Uporabnik lahko pridobi seznam vseh vodičev.</li>
+        <li>Možnost filtriranja vodičev po kategorijah.</li>
+        <li>Podrobni ogled posameznega vodiča s slikami, videi in seznamom potrebnih orodij.</li>
+        <li>REST API: GET /api/tutorials, /api/tutorials/:id</li>
+        <li>Vhod: /</li>
+        <li>Izhod: seznam vodičev.</li>
+    </ul>
+    
+    <h2>2. Dodajanje novih vodičev</h2>
+    <ul>
+        <li>Registrirani uporabniki lahko dodajo nove vodiče s podrobnostmi, slikami in videoposnetki.</li>
+        <li>Možnost kategorizacije vodičev.</li>
+        <li>REST API: POST /api/tutorials</li>
+        <li>Vhod: JSON objekt vodiča.</li>
+        <li>Izhod: ID novo dodanega vodiča.</li>
+    </ul>
+    
+    <h2>3. Brisanje vodičev</h2>
+    <ul>
+        <li>Registrirani uporabniki lahko izbrišejo svoje vodiče.</li>
+        <li>REST API: DELETE /api/tutorials/:id</li>
+        <li>Vhod: ID vodiča</li>
+        <li>Izhod: potrditev o uspešnem brisanju.</li>
+    </ul>
+    
+    <h2>4. Dodajanje in pregledovanje komentarjev</h2>
+    <ul>
+        <li>Uporabniki lahko dodajajo komentarje k vodičem.</li>
+        <li>Prikaz vseh komentarjev za določen vodič.</li>
+        <li>REST API: GET /api/comments/:tutorialId, POST /api/comments</li>
+        <li>Vhod: JSON objekt komentarja.</li>
+        <li>Izhod: ID novega komentarja.</li>
+    </ul>
+    
+    <h2>5. Pregled orodij/materialov</h2>
+    <ul>
+        <li>Seznam vseh priporočenih orodij in materialov.</li>
+        <li>Podrobnosti o posameznem orodju, vključno z opisom in priporočili za nakup.</li>
+        <li>REST API: GET /api/tools, GET /api/tools/:id</li>
+        <li>Vhod: /</li>
+        <li>Izhod: seznam orodij/materialov.</li>
+    </ul>
+ 
+    <h2>6. Shranjevanje vodičev za kasnejšo uporabo</h2>
+    <ul>
+        <li>Uporabniki lahko shranijo svoje priljubljene vodiče za kasnejši ogled.</li>
+        <li>Shranjen vodiči so dostopni tudi brez povezave.</li>
+        <li>REST API: GET /api/user/:id/saved-tutorials</li>
+        <li>Vhod: ID uporabnika.</li>
+        <li>Izhod: seznam shranjenih vodičev.</li>
+    </ul>
+
+    <h2>7. Beleženje napredka</h2>
+    <ul>
+        <li>Uporabniki lahko beležijo napredek popravila.</li>
+        <li>Popravila so razdelejna po korakih. Uporabnik si lahko beleži, na katerem koraku je ostal.</li>
+        <li>Vhod: JSON objekt napredka (ID vodiča, korak).</li>
+        <li>Izhod: potrditev napredka.</li>
+    </ul>
+
+    <h2>8. Zbiranje značk za uspešno opravljena popravila</h2>
+    <ul>
+        <li>Uporabnikom je omogočeno zbiranje značk.</li>
+        <li>Ko uporabnik zaključi s popravilom, dobi značko, ki se mu shrani na njegov profil.</li>
+        <li>Vhod: ID opravljenega popravila.</li>
+        <li>Izhod: ID nove značke.</li>
+    </ul>
+
+    <h2>9. Pregled priporočil za nakup materialov in orodij</h2>
+    <ul>
+        <li>Po pregledu vsega materiala in orodij je uporabnikom predlagano, kje lahko te stvari nabavijo.</li>
+        <li>Uporabnikom so tako olajšana popravila, saj jim aplikacija predlaga, kje lahko dobi potreben material.</li>
+        <li>Vhod: seznam potrebnih orodij/materialov.</li>
+        <li>Izhod: seznam priporočil za nakup (povezave do trgovin).</li>
+    </ul>
+
+</body>
+</html>
