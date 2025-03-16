@@ -79,7 +79,7 @@ const server = http.createServer((req, res) => {
     });
   } else if (req.url === "/funkcionalnosti-streznika/") {
     fs.readFile(
-      path.join(__dirname, "../Description/funkcionalnosti-streznika.html"),
+      path.join(__dirname, "../Description/streznik.html"),
       (err, data) => {
         if (err) {
           res.writeHead(500, { "Content-Type": "text/plain, charset=UTF-8" });
@@ -92,7 +92,7 @@ const server = http.createServer((req, res) => {
     );
   } else if (req.url === "/posebnosti-streznika/") {
     fs.readFile(
-      path.join(__dirname, "../Description/posebnosti-streznika.txt"),
+      path.join(__dirname, "../Description/posebnostiStreznik.txt"),
       (err, data) => {
         if (err) {
           res.writeHead(500, { "Content-Type": "text/plain, charset=UTF-8" });

@@ -1,0 +1,39 @@
+Posebnosti implementacije strežnika HandyDandy
+
+1. **Tehnološke zahteve:**
+   - Strežnik je implementiran v **Node.js** z uporabo samo privzetih modulov.
+   - Podatki o uporabnikih, vodičih in napredku so shranjeni v **Firestore Database**.
+   - Avtentikacija uporabnikov je urejena preko **Firebase Authentication**.
+   - Video in slikovni vodiči so shranjeni v **Firebase Storage**.
+   - Strežnik uporablja **REST API**, ki omogoča odjemalcem pridobivanje in posodabljanje podatkov.
+
+2. **Varnostne zahteve:**
+   - Uporaba **JWT (JSON Web Token)** za avtentikacijo uporabnikov.
+   - Omejitve dostopa do administrativnih funkcij (samo administratorji lahko urejajo in brišejo vodiče).
+   - Šifriranje občutljivih podatkov pri shranjevanju.
+   - Preprečevanje nezaželenih dostopov in izvajanje **rate limiting** na API klice.
+
+3. **Sinhronizacija podatkov:**
+   - Omogočena sinhronizacija vodičev za **offline dostop** z uporabo **IndexedDB** na odjemalski strani.
+   - Strežnik podpira **periodične posodobitve** za sinhronizacijo sprememb.
+   
+4. **Podpora za priporočilni sistem:**
+   - Strežnik zbira podatke o uporabi vodičev.
+   - Algoritem priporoča vodiče glede na zgodovino uporabnika.
+   - Priporočeni vodiči so shranjeni in sinhronizirani ob prijavi uporabnika.
+
+5. **Podpora za moderiranje vsebine:**
+   - Administratorji imajo dostop do orodij za moderiranje komentarjev in ocen vodičev.
+   - Neprimerni vodiči in komentarji so lahko označeni in odstranjeni.
+
+6. **Povezava z e-trgovinami:**
+   - Strežnik pridobiva podatke o izdelkih preko zunanjih API-jev.
+   - Uporabnikom prikazuje priporočene izdelke in orodja glede na vsebino vodičev.
+   - Možnost direktne povezave do nakupa izdelkov.
+
+7. **Obdelava in optimizacija zahtev:**
+   - Podpora za asinhrono obdelavo zahtev za izboljšanje odzivnosti.
+   - Optimizacija REST API-ja z **caching** mehanizmi za hitrejšo dostavo podatkov.
+   - Obdelava slik in video vsebin pred shranjevanjem za zmanjšanje porabe prostora.
+
+
