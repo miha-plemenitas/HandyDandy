@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funkcionalnosti strežnika HandyDandy</title>
+</head>
+<body>
+    <h1>Funkcionalnosti strežnika aplikacije HandyDandy</h1>
+    
+    <h2>1. Avtentikacija uporabnikov</h2>
+    <ul>
+        <li>Uporabniki se lahko registrirajo in prijavijo v aplikacijo.</li>
+        <li>Upravljanje uporabniških sej.</li>
+        <li>Avtentikacija preko Firebase Authentication.</li>
+        <li>REST API: POST /api/auth/register, POST /api/auth/login</li>
+        <li>Vhod: JSON objekt z uporabniškimi podatki.</li>
+        <li>Izhod: JWT žeton za avtentikacijo.</li>
+    </ul>
+    
+    <h2>2. Upravljanje vsebine vodičev</h2>
+    <ul>
+        <li>Dodajanje, urejanje, brisanje in iskanje video ter slikovnih vodičev.</li>
+        <li>Vodiči se shranjujejo v Firebase Storage.</li>
+        <li>REST API: GET /api/guides, POST /api/guides, DELETE /api/guides/:id</li>
+        <li>Vhod: JSON objekt vodiča.</li>
+        <li>Izhod: ID novega vodiča.</li>
+    </ul>
+    
+    <h2>3. Shranjevanje napredka uporabnikov</h2>
+    <ul>
+        <li>Uporabniki lahko spremljajo izvedena popravila in prejemajo značke.</li>
+        <li>Podatki se shranjujejo v Firestore Database.</li>
+        <li>REST API: POST /api/progress, GET /api/progress/:userId</li>
+        <li>Vhod: JSON objekt napredka.</li>
+        <li>Izhod: posodobljeni napredek uporabnika.</li>
+    </ul>
+    
+    <h2>4. Sinhronizacija vsebin za offline dostop</h2>
+    <ul>
+        <li>Vodiči se lahko prenesejo na napravo za uporabo brez internetne povezave.</li>
+        <li>Sinhronizacija s Firebase Cloud Messaging.</li>
+        <li>REST API: GET /api/guides/offline</li>
+    </ul>
+    
+    <h2>5. Priporočilni sistem</h2>
+    <ul>
+        <li>Algoritem predlaga vodiče glede na zgodovino popravil.</li>
+        <li>REST API: GET /api/recommendations/:userId</li>
+    </ul>
+    
+    <h2>6. Sistem ocen in komentarjev</h2>
+    <ul>
+        <li>Uporabniki lahko ocenjujejo vodiče in dodajajo komentarje.</li>
+        <li>REST API: POST /api/comments, GET /api/comments/:guideId</li>
+        <li>Vhod: JSON objekt komentarja.</li>
+        <li>Izhod: ID novega komentarja.</li>
+    </ul>
+    
+    <h2>7. Integracija z e-trgovinami</h2>
+    <ul>
+        <li>Priporočila za nakup orodij in materialov.</li>
+        <li>REST API: GET /api/tools, GET /api/tools/:id</li>
+        <li>Vhod: seznam potrebnih materialov.</li>
+        <li>Izhod: priporočila za nakup.</li>
+    </ul>
+    
+    <h2>UML Diagram primerov uporabe</h2>
+    <p>Spodaj je prikazan UML diagram primerov uporabe, ki prikazuje interakcijo uporabnikov s strežnikom:</p>
+    <img src="diagram.png" alt="UML Diagram primerov uporabe" style="width:100%; max-width:600px;">
+    
+</body>
+</html>
