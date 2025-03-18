@@ -79,4 +79,38 @@ router.get("/me", verifyToken, async (req, res) => {
   }
 });
 
+// Update User Information
+router.put("/update", verifyToken, async (req, res) => {
+  try {
+    const { username, email } = req.body;
+
+    // Ensure at least one field is being updated
+    if (!username && !email) {
+      return res
+        .status(400)
+        .json({ message: "Provide username or email to update." });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user, // `req.user` is set by the `verifyToken` middleware
+      { username, email },
+      { new: true }
+    ).select("-password"); // Exclude password from response
+
+    res.json({ message: "User updated successfully", user: updatedUser });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Delete User Account
+router.delete("/delete", verifyToken, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user); // Deletes the user from DB
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
