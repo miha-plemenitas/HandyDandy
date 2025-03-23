@@ -25,7 +25,18 @@ mongoose
   .catch((err) => console.log(err));
 
 // Routes
+const authRouter = require("./routes/auth");
+const guidesRouter = require("./routes/guides");
+const progressRouter = require("./routes/progress");
+const commentsRouter = require("./routes/comments");
+const toolsRouter = require("./routes/tools");
 const usersRouter = require("./routes/users");
+
+app.use("/api/auth", authRouter);
+app.use("/api/guides", guidesRouter);
+app.use("/api/progress", progressRouter);
+app.use("/api/comments", commentsRouter);
+app.use("/api/tools", toolsRouter);
 app.use("/api/users", usersRouter);
 
 // Catch 404 and forward to error handler
