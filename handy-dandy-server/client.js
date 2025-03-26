@@ -17,7 +17,10 @@ const registerUser = async () => {
     });
     console.log("✅ Registration Response:", response.data);
   } catch (error) {
-    console.error("❌ Registration Error:", error.response?.data || error.message);
+    console.error(
+      "❌ Registration Error:",
+      error.response?.data || error.message
+    );
   }
 };
 
@@ -41,7 +44,10 @@ const getUserInfo = async (token) => {
     });
     console.log("✅ User Info:", response.data);
   } catch (error) {
-    console.error("❌ Get User Info Error:", error.response?.data || error.message);
+    console.error(
+      "❌ Get User Info Error:",
+      error.response?.data || error.message
+    );
   }
 };
 
@@ -80,7 +86,9 @@ const testOAuthLogin = async () => {
   try {
     await open(oauthUrl);
     console.log(`👉 Opened: ${oauthUrl}`);
-    console.log("✅ After logging in, open this in your browser to verify session:");
+    console.log(
+      "✅ After logging in, open this in your browser to verify session:"
+    );
     console.log("👉 http://localhost:5000/api/users/session");
   } catch (err) {
     console.error("❌ Couldn't open browser:", err.message);
