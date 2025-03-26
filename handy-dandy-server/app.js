@@ -6,6 +6,10 @@ const logger = require("morgan");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const session = require("express-session");
+const passport = require("passport");
+
+require("./passport"); // Import passport config
 
 const app = express();
 
@@ -14,6 +18,19 @@ app.use(cors());
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Session Middleware (needed for OAuth)
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 // MongoDB Connection
 mongoose
@@ -25,14 +42,12 @@ mongoose
   .catch((err) => console.log(err));
 
 // Routes
-const authRouter = require("./routes/auth");
 const guidesRouter = require("./routes/guides");
 const progressRouter = require("./routes/progress");
 const commentsRouter = require("./routes/comments");
 const toolsRouter = require("./routes/tools");
 const usersRouter = require("./routes/users");
 
-app.use("/api/auth", authRouter);
 app.use("/api/guides", guidesRouter);
 app.use("/api/progress", progressRouter);
 app.use("/api/comments", commentsRouter);
