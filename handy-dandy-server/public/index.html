@@ -40,11 +40,34 @@
     <div id="notification"></div>
 
     <!-- Subscribe to Notifications -->
-    <!-- Add Notify Button -->
     <button id="test-notification-btn">Send Test Notification</button>
     <div id="subscription-status"></div>
 
+    <!-- Lazy Load Example Images -->
+    <div>
+      <h2>Lazy Loaded Images</h2>
+      <img
+        data-src="/images/tools-and-utensils_128.png"
+        alt="Tool Icon Small"
+        width="128"
+        height="128"
+      />
+      <img
+        data-src="/images/tools-and-utensils_256.png"
+        alt="Tool Icon Medium"
+        width="256"
+        height="256"
+      />
+      <img
+        data-src="/images/tools-and-utensils_512.png"
+        alt="Tool Icon Large"
+        width="512"
+        height="512"
+      />
+    </div>
+
     <!-- JS -->
     <script src="javascripts/app.js" defer></script>
+    <script src="javascripts/lazyload.js" defer></script>
   </body>
 </html>

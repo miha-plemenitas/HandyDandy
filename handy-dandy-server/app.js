@@ -24,7 +24,12 @@ webpush.setVapidDetails(
 const subscribers = [];
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5000",
+    credentials: true,
+  })
+);
 app.use(logger("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -207,6 +207,32 @@ window.addEventListener("online", () => {
   loadData();
 });
 
+// ==================== Keyboard Shortcuts ====================
+
+document.addEventListener("keydown", (e) => {
+  // Ctrl + F → Focus Search Input
+  if (e.ctrlKey && e.key === "f") {
+    e.preventDefault();
+    searchInput.focus();
+  }
+
+  // Ctrl + M → Open Add User Form
+  if (e.ctrlKey && e.key === "m") {
+    e.preventDefault();
+    if (!currentUser) {
+      showNotification("Please login first", true);
+      return;
+    }
+    form.style.display = "block";
+    form.scrollIntoView({ behavior: "smooth" });
+    document.getElementById("data-id").value = "";
+    document.getElementById("data-username").value = "";
+    document.getElementById("data-email").value = "";
+    document.getElementById("data-username").focus();
+    showNotification("🟣 Ready to add a new user");
+  }
+});
+
 // ==================== Login / Logout ====================
 loginBtn.addEventListener("click", () => {
   window.location.href = `${apiUrl}/auth/google`;
