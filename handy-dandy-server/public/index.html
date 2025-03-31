@@ -1,13 +1,50 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HandyDandy</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="stylesheet" href="stylesheets/style.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/images/tools-and-utensils_128.png"
+    />
+  </head>
 
-<head>
-  <title>Express</title>
-  <link rel="stylesheet" href="/stylesheets/style.css">
-</head>
+  <body>
+    <h1>HandyDandy PWA</h1>
 
-<body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
-</body>
+    <!-- Session Info -->
+    <div id="session-info"></div>
+    <button id="login-btn">Login with Google</button>
+    <button id="logout-btn" style="display: none">Logout</button>
 
+    <!-- Search -->
+    <input type="text" id="search" placeholder="🔍 Search..." />
+
+    <!-- Data List -->
+    <ul id="data-list"></ul>
+
+    <!-- Form -->
+    <h2>Add / Edit Item</h2>
+    <form id="data-form">
+      <input type="hidden" id="data-id" />
+      <input type="text" id="data-username" placeholder="Username" required />
+      <input type="email" id="data-email" placeholder="Email" required />
+      <button type="submit">Save</button>
+    </form>
+
+    <!-- Notifications -->
+    <div id="notification"></div>
+
+    <!-- Subscribe to Notifications -->
+    <!-- Add Notify Button -->
+    <button id="test-notification-btn">Send Test Notification</button>
+    <div id="subscription-status"></div>
+
+    <!-- JS -->
+    <script src="javascripts/app.js" defer></script>
+  </body>
 </html>

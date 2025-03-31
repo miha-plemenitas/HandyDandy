@@ -13,16 +13,19 @@ passport.use(
       try {
         const email = profile.emails[0].value;
 
-        // Check if user exists
+        // Look for existing user by email
         let user = await User.findOne({ email });
 
         if (!user) {
-          // Create a new user
+          // If not found, create new
           user = await new User({
             username: profile.displayName,
             email: email,
-            password: "", // Leave blank for OAuth users
+            password: "", // empty password for OAuth users
           }).save();
+          console.log("✅ User auto-registered via OAuth");
+        } else {
+          console.log("✅ Existing user logged in via OAuth");
         }
 
         return done(null, user);
