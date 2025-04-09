@@ -23,6 +23,7 @@ const loginBtn = document.getElementById("login-btn");
 const logoutBtn = document.getElementById("logout-btn");
 const testNotifyBtn = document.getElementById("test-notification-btn");
 const sessionInfo = document.getElementById("session-info");
+const voiceBtn = document.getElementById("voice-btn");
 let currentUser = null;
 
 // ==================== Push Subscription ====================
@@ -114,16 +115,16 @@ function displayData(users) {
   users.forEach((user) => {
     const li = document.createElement("li");
     li.innerHTML = `
-                  <strong>${user.username}</strong> (${user.email})
-                  ${
-                    currentUser
-                      ? currentUser._id === user._id
-                        ? ` <span class="tag">You</span>`
-                        : ` <button onclick="editUser('${user._id}', '${user.username}', '${user.email}')">✏️</button>
-                                  <button onclick="deleteUser('${user._id}')">🗑️</button>`
-                      : ""
-                  }
-              `;
+      <strong>${user.username}</strong> (${user.email})
+      ${
+        currentUser
+          ? currentUser._id === user._id
+            ? ` <span class="tag">You</span>`
+            : ` <button onclick="editUser('${user._id}', '${user.username}', '${user.email}')">✏️</button>
+                <button onclick="deleteUser('${user._id}')">🗑️</button>`
+          : ""
+      }
+    `;
     dataList.appendChild(li);
   });
 }
@@ -247,3 +248,55 @@ logoutBtn.addEventListener("click", async () => {
 
 // ==================== Init ====================
 checkSession();
+
+// ==================== Voice Control ====================
+const SpeechRecognition =
+  window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+
+recognition.lang = "en-US";
+recognition.interimResults = false;
+recognition.maxAlternatives = 1;
+
+voiceBtn.addEventListener("click", () => {
+  recognition.start();
+  showNotification("🎤 Listening for command...");
+});
+
+recognition.addEventListener("result", (event) => {
+  const command = event.results[0][0].transcript.toLowerCase();
+  console.log("🎙️ Command heard:", command);
+  handleVoiceCommand(command);
+});
+
+recognition.addEventListener("end", () => {
+  console.log("🎤 Voice recognition ended.");
+});
+
+function handleVoiceCommand(command) {
+  if (command.includes("login")) {
+    loginBtn.click();
+    speak("Logging you in.");
+  } else if (command.includes("log out")) {
+    logoutBtn.click();
+    speak("Logging you out.");
+  } else if (command.includes("show users")) {
+    loadData();
+    speak("Here are the users.");
+  } else if (command.startsWith("search")) {
+    const name = command.replace("search", "").trim();
+    searchInput.value = name;
+    loadData(name);
+    speak(`Searching for ${name}`);
+  } else if (command.includes("send notification")) {
+    testNotifyBtn.click();
+    speak("Sending a test notification.");
+  } else {
+    speak("Sorry, I didn't understand that command.");
+  }
+}
+
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  speechSynthesis.speak(utterance);
+}
