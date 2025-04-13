@@ -39,7 +39,7 @@ router.post("/add", verifySession, async (req, res) => {
     const newUser = await User.create({ username, email, password: "" });
 
     // Notify
-    await fetch("http://localhost:5000/notify", {
+    await fetch("http://localhost:5001/notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: `New user added: ${username}` }),

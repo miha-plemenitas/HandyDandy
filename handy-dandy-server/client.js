@@ -1,7 +1,7 @@
 const axios = require("axios");
 const open = require("open").default;
 
-const API_URL = "http://localhost:5000/api/users";
+const API_URL = "http://localhost:5001/api/users";
 
 // =========================
 // GOOGLE OAUTH TEST SUITE
