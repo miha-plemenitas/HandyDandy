@@ -7,7 +7,7 @@ self.addEventListener("activate", (event) => {
   console.log("✅ Service Worker Activated");
 });
 
-// ==================== Caching (Optional) ====================
+// ==================== Caching ====================
 self.addEventListener("fetch", (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
