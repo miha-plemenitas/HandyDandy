@@ -1,19 +1,5 @@
-import { connectDB } from '@/utils/db';
-import mongoose from 'mongoose';
-
-const guideSchema = new mongoose.Schema({
-  title: String,
-  description: String,
-  steps: [String],
-  images: [String],
-  videoUrl: String,
-  category: String,
-  tools: [String],
-  author: String,
-  createdAt: { type: Date, default: Date.now },
-});
-
-const Guide = mongoose.models.Guide || mongoose.model('Guide', guideSchema);
+import { connectDB } from "@/utils/db";
+import Guide from "@/models/Guide";
 
 export async function GET(req) {
   await connectDB();
@@ -22,7 +8,7 @@ export async function GET(req) {
     return Response.json(guides);
   } catch (err) {
     console.error("GET error:", err);
-    return Response.json({ error: 'Error fetching guides.' }, { status: 500 });
+    return Response.json({ error: "Error fetching guides." }, { status: 500 });
   }
 }
 
@@ -34,7 +20,7 @@ export async function POST(req) {
     return Response.json(newGuide, { status: 201 });
   } catch (err) {
     console.error("POST error:", err);
-    return Response.json({ error: 'Error saving guide.' }, { status: 400 });
+    return Response.json({ error: "Error saving guide." }, { status: 400 });
   }
 }
 
@@ -50,8 +36,8 @@ export async function PUT(req) {
     }
 
     const updatedGuide = await Guide.findByIdAndUpdate(
-      id, 
-      updateData, 
+      id,
+      updateData,
       { new: true } // Return the updated document
     );
 
@@ -77,7 +63,7 @@ export async function DELETE(req) {
     }
 
     const deletedGuide = await Guide.findByIdAndDelete(id);
-    
+
     if (!deletedGuide) {
       return Response.json({ error: "Guide not found" }, { status: 404 });
     }
