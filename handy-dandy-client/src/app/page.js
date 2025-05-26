@@ -1,6 +1,71 @@
 "use client";
 
-import Link from "next/link";
+import { useState, useEffect, useCallback } from "react";
+import Header from "@/components/Header";
+import UserForm from "@/components/UserForm";
+import UserList from "@/components/UserList";
+import VoiceControl from "@/components/VoiceControl";
+import NotificationBanner from "@/components/NotificationBanner";
+import LazyImageGallery from "@/components/LazyImageGallery";
+import Navbar from "@/components/Navbar";
+import GuidesSection from "@/components/GuidesSection";
+
+
+export default function Home() {
+  const [notification, setNotification] = useState({
+    message: "",
+    isError: false,
+  });
+  const [editingUser, setEditingUser] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const showNotification = useCallback((message, isError = false) => {
+    setNotification({ message, isError });
+    setTimeout(() => setNotification({ message: "", isError: false }), 4000);
+  }, []);
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/serviceWorker.js")
+        .then((reg) => {
+          console.log("✅ SW registered:", reg.scope);
+          subscribeToPushNotifications();
+        })
+        .catch((err) => console.error("❌ SW registration failed:", err));
+    }
+  }, []);
+
+  const subscribeToPushNotifications = async () => {
+    const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!publicKey) {
+      console.warn("VAPID public key is not defined");
+      return;
+    }
+
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(publicKey),
+    });
+
+    await fetch("/api/subscribe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(sub),
+    });
+
+    console.log("✅ Push subscription complete");
+  };
+
+  const urlBase64ToUint8Array = (base64String) => {
+    if (!base64String) throw new Error("VAPID public key is missing");
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding)
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+    return Uint8Array.from([...atob(base64)].map((c) => c.charCodeAt(0)));
+  };
 
 export default function HomePage() {
   return (
@@ -12,29 +77,33 @@ export default function HomePage() {
         dashboard.
       </p>
 
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2">
-        <Link
-          href="/guides"
-          className="p-6 bg-green-100 rounded-lg hover:bg-green-200 shadow"
-        >
-          <h2 className="text-xl font-semibold">📚 Guides</h2>
-          <p>Browse step-by-step repair guides.</p>
-        </Link>
-        <Link
-          href="/tools"
-          className="p-6 bg-blue-100 rounded-lg hover:bg-blue-200 shadow"
-        >
-          <h2 className="text-xl font-semibold">🧰 Tools</h2>
-          <p>View recommended tools and materials.</p>
-        </Link>
-        <Link
-          href="/profile"
-          className="p-6 bg-yellow-100 rounded-lg hover:bg-yellow-200 shadow"
-        >
-          <h2 className="text-xl font-semibold">👤 Profile</h2>
-          <p>Access and update your user info.</p>
-        </Link>
-      </div>
-    </main>
+        <div className="mb-6">
+          <input
+            type="text"
+            id="search"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="🔍 Search users..."
+            className="w-full"
+          />
+        </div>
+
+        <UserList
+          onEdit={setEditingUser}
+          showNotification={showNotification}
+          searchTerm={searchTerm}
+        />
+
+        <h2 className="text-xl font-semibold mt-10 mb-4">Add / Edit User</h2>
+        <UserForm
+          userToEdit={editingUser}
+          clearEdit={() => setEditingUser(null)}
+          showNotification={showNotification}
+        />
+
+        <GuidesSection showNotification={showNotification} />
+        <LazyImageGallery />
+      </main>
+    </>
   );
 }
