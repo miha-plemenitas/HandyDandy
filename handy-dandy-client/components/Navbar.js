@@ -1,33 +1,39 @@
 "use client";
+
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const isAdmin = session?.user?.email === "miha.plemenitas@gmail.com";
+
+  const isActive = (path) => pathname === path;
 
   return (
     <nav className="flex items-center justify-between px-6 py-4 bg-zinc-900 shadow-lg">
-      <h1 className="text-white font-bold text-xl">🔧 HandyDandy</h1>
+      {/* Clickable logo */}
+      <Link
+        href="/"
+        className="text-white font-bold text-xl hover:text-blue-300"
+      >
+        🔧 HandyDandy
+      </Link>
+
       <div className="flex items-center space-x-4">
-        <Link href="/" className="text-zinc-300 hover:text-white">
-          Home
-        </Link>
-        <Link href="/guides" className="text-zinc-300 hover:text-white">
-          Guides
-        </Link>
-        <Link href="/tools" className="text-zinc-300 hover:text-white">
-          Tools
-        </Link>
+        <NavLink href="/" label="Home" isActive={isActive("/")} />
+        <NavLink href="/guides" label="Guides" isActive={isActive("/guides")} />
+        <NavLink href="/tools" label="Tools" isActive={isActive("/tools")} />
         {session?.user && (
-          <Link href="/profile" className="text-zinc-300 hover:text-white">
-            Profile
-          </Link>
+          <NavLink
+            href="/profile"
+            label="Profile"
+            isActive={isActive("/profile")}
+          />
         )}
         {isAdmin && (
-          <Link href="/admin" className="text-zinc-300 hover:text-white">
-            Admin
-          </Link>
+          <NavLink href="/admin" label="Admin" isActive={isActive("/admin")} />
         )}
         {session ? (
           <button
@@ -46,5 +52,20 @@ export default function Navbar() {
         )}
       </div>
     </nav>
+  );
+}
+
+function NavLink({ href, label, isActive }) {
+  return (
+    <Link
+      href={href}
+      className={`px-3 py-1 rounded ${
+        isActive
+          ? "bg-white text-zinc-900 font-semibold"
+          : "text-zinc-300 hover:text-white"
+      }`}
+    >
+      {label}
+    </Link>
   );
 }
