@@ -8,6 +8,8 @@ import VoiceControl from "@/components/VoiceControl";
 import NotificationBanner from "@/components/NotificationBanner";
 import LazyImageGallery from "@/components/LazyImageGallery";
 import Navbar from "@/components/Navbar";
+import GuidesSection from "@/components/GuidesSection";
+
 
 export default function Home() {
   const [notification, setNotification] = useState({
@@ -117,6 +119,7 @@ export default function Home() {
           showNotification={showNotification}
         />
 
+        <GuidesSection showNotification={showNotification} />
         <LazyImageGallery />
       </main>
     </>
