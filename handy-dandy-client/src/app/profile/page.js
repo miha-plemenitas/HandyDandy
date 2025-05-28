@@ -4,9 +4,26 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
+  const [favoriteGuides, setFavoriteGuides] = useState([]);
   const { data: session } = useSession();
   const [userData, setUserData] = useState(null);
   const [badges, setBadges] = useState([]);
+
+  useEffect(() => {
+    if (session) {
+      fetch("/api/users/favorites")
+        .then(res => res.json())
+        .then(async data => {
+          const ids = data.favorites || [];
+          // Fetch all guides or fetch by IDs
+          const allGuides = await fetch("/api/guides").then(res => res.json());
+          const favGuides = allGuides.filter(g => ids.includes(g._id));
+          setFavoriteGuides(favGuides);
+        });
+    }
+  }, [session]);
+
+
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -112,6 +129,29 @@ export default function ProfilePage() {
         >
           🎖 Simulate Earning Badge
         </button>
+      </div>
+
+      <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+        <h2 className="text-2xl font-semibold mb-4 text-center">⭐ Priljubljeni vodiči</h2>
+        {favoriteGuides.length > 0 ? (
+          <ul className="space-y-3">
+            {favoriteGuides.map(guide => (
+              <li key={guide._id} className="bg-zinc-700 p-3 rounded-lg flex items-center gap-4">
+                <img
+                  src={guide.images?.[0] || "/images/placeholder.png"}
+                  alt="Guide"
+                  className="w-8 h-8 object-cover rounded"
+                />
+                <div>
+                  <div className="font-semibold text-zinc-100">{guide.title}</div>
+                  <div className="text-zinc-400 text-sm">{guide.category}</div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-center text-zinc-400">Nimaš še shranjenih vodičev.</p>
+        )}
       </div>
     </main>
   );
