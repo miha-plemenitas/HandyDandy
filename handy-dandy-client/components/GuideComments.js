@@ -2,6 +2,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { FaTrash } from "react-icons/fa";
 
 export default function GuideComments({ guideId }) {
     const { data: session } = useSession();
@@ -16,6 +17,7 @@ export default function GuideComments({ guideId }) {
                 .then(res => res.json())
                 .then(data => setComments(data.comments || []));
         }
+
     }, [guideId]);
 
 
@@ -54,19 +56,37 @@ export default function GuideComments({ guideId }) {
                     <div className="space-y-6">
                         {comments.length > 0 ? (
                             comments.map(c => (
-                                <div
-                                    key={c._id}
-                                    className="bg-gray-50 p-4 rounded-lg shadow text-lg text-gray-700"
-                                >
+                                <div key={c._id} className="relative bg-gray-50 p-4 rounded-lg shadow text-lg text-gray-700">
                                     <div className="flex justify-between items-center mb-1">
                                         <span className="font-semibold text-gray-700 text-base">
                                             {c.authorName || "Unknown"}
                                         </span>
                                         <span className="text-xs text-gray-400">
                                             {new Date(c.createdAt).toLocaleString()}
+
                                         </span>
+
                                     </div>
-                                    <div className="text-gray-700 text-base mt-1">{c.content}</div>
+                                    <div className="text-gray-700 text-base mt-1">{c.content}
+
+                                    </div>
+                                    {/* Gumb za izbris */}
+                                    {String(session?.user?.id) === String(c.userId) && (
+                                        <button
+                                            className="absolute bottom-2 right-2 text-red-400 hover:text-red-600 transition-colors p-1"
+                                            onClick={async () => {
+                                                if (confirm("Are you sure you want to delete this comment?")) {
+                                                    await fetch(`/api/comments?id=${c._id}`, { method: "DELETE" });
+                                                    setComments(prev => prev.filter(x => x._id !== c._id));
+                                                }
+                                            }}
+                                            title="Delete comment"
+                                            type="button"
+                                        >
+                                            🗑️
+                                        </button>
+                                    )}
+
                                 </div>
                             ))
                         ) : (

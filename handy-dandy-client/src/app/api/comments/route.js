@@ -52,3 +52,31 @@ export async function GET(req) {
     );
   }
 }
+
+export async function DELETE(req) {
+  await connectDB();
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
+    return Response.json({ error: "Not authenticated." }, { status: 401 });
+  }
+  try {
+    const url = new URL(req.url);
+    const commentId = url.searchParams.get("id");
+    if (!commentId) {
+      return Response.json({ error: "Missing comment id." }, { status: 400 });
+    }
+    // Poišči komentar
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return Response.json({ error: "Comment not found." }, { status: 404 });
+    }
+    // Dovoli brisanje le svojemu avtorju
+    if (comment.userId !== session.user.id) {
+      return Response.json({ error: "Forbidden." }, { status: 403 });
+    }
+    await comment.deleteOne();
+    return Response.json({ success: true });
+  } catch (e) {
+    return Response.json({ error: "Error deleting comment." }, { status: 500 });
+  }
+}
