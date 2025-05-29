@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import GuideComments from "./GuideComments";
 
 export default function GuideDetails({ guide, onClose }) {
   if (!guide) return null;
@@ -132,6 +133,7 @@ export default function GuideDetails({ guide, onClose }) {
               </div>
             </div>
           </div>
+          <GuideComments guideId={guide._id} />
 
           <div className="mt-8 flex justify-end">
             <button
