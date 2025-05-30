@@ -10,6 +10,7 @@ export default function GuideDetails({ guide, onClose }) {
 
   const { data: session } = useSession();
   const [currentStepIndex, setCurrentStepIndex] = useState(0); // 1-based index
+  const [showBadgeCelebration, setShowBadgeCelebration] = useState(false);
 
   useEffect(() => {
     const fetchProgress = async () => {
@@ -19,6 +20,7 @@ export default function GuideDetails({ guide, onClose }) {
         const match = all.find((p) => p.guideId === guide._id);
         if (match) {
           setCurrentStepIndex(match.currentStep); // Already 1-based
+          setShowBadgeCelebration(match.completed && !match.badgeEarned);
         }
       }
     };
@@ -54,6 +56,10 @@ export default function GuideDetails({ guide, onClose }) {
 
       await axios.post("/api/progress", payload);
       setCurrentStepIndex(newStepIndex);
+
+      if (newStepIndex === guide.steps.length) {
+        setShowBadgeCelebration(true);
+      }
     } catch (err) {
       console.error("Error saving progress:", err);
       alert("Error saving progress");
@@ -142,6 +148,20 @@ export default function GuideDetails({ guide, onClose }) {
                         }}
                       />
                     </div>
+
+                    {showBadgeCelebration && (
+                      <div className="flex items-center gap-4 bg-yellow-50 border border-yellow-300 p-4 rounded-xl shadow-inner my-4 animate-fade-in-up">
+                        <img
+                          src="/images/badge-icon-64.png"
+                          alt="Trophy"
+                          className="w-12 h-12"
+                        />
+                        <p className="text-yellow-800 font-semibold text-lg">
+                          🏅 You have earned a badge!
+                        </p>
+                      </div>
+                    )}
+
                     <ul className="space-y-4">
                       {guide.steps.map((step, i) => {
                         const stepIndex = i + 1;

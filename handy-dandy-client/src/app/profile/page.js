@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import GuideDetails from "@/components/GuideDetails";
 import { FaStar } from "react-icons/fa";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 export default function ProfilePage() {
   const [favoriteGuides, setFavoriteGuides] = useState([]);
@@ -45,6 +46,18 @@ export default function ProfilePage() {
     }
   }, [session]);
 
+  const handleRemoveFavorite = async (guide) => {
+    const ids = favoriteGuides.map((g) => g._id);
+    const newIds = ids.filter((id) => id !== guide._id);
+    setFavoriteGuides(favoriteGuides.filter((g) => g._id !== guide._id));
+
+    try {
+      await axios.patch("/api/users/favorites", { favorites: newIds });
+    } catch (err) {
+      console.error("Error updating favorites:", err);
+    }
+  };
+
   if (!session) {
     return (
       <main className="px-6 py-8 text-white">
@@ -54,27 +67,15 @@ export default function ProfilePage() {
     );
   }
 
-  const handleRemoveFavorite = async (guide) => {
-    // Pretvori favoriteGuides v array _id-jev
-    const ids = favoriteGuides.map((g) => g._id);
-    // Odstrani kliknjen guide po _id
-    const newIds = ids.filter((id) => id !== guide._id);
-
-    // Lokalen update (prikaži takoj brez refresh)
-    setFavoriteGuides(favoriteGuides.filter((g) => g._id !== guide._id));
-
-    // Pošlji PATCH na backend (array id-jev!)
-    try {
-      await axios.patch("/api/users/favorites", { favorites: newIds });
-    } catch (err) {
-      console.error("Napaka pri shranjevanju priljubljenih vodičev:", err);
-    }
-  };
-
   return (
-    <main className="px-6 py-8 flex justify-center items-start gap-6 min-h-[80vh] text-white">
+    <main className="px-6 py-8 flex justify-center items-start gap-6 flex-wrap min-h-[80vh] text-white">
       {/* User Card */}
-      <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <motion.div
+        className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
         <div className="flex flex-col items-center text-center">
           <div className="text-5xl mb-4">👤</div>
           <h1 className="text-3xl font-bold mb-2">User Profile</h1>
@@ -85,24 +86,29 @@ export default function ProfilePage() {
           <div className="space-y-4 text-lg">
             <div>
               <span className="font-semibold text-zinc-300">👨‍💼 Name:</span>{" "}
-              <span>{userData.username}</span>
+              {userData.username}
             </div>
             <div>
               <span className="font-semibold text-zinc-300">📧 Email:</span>{" "}
-              <span>{userData.email}</span>
+              {userData.email}
             </div>
             <div>
               <span className="font-semibold text-zinc-300">📅 Created:</span>{" "}
-              <span>{new Date(userData.createdAt).toLocaleString()}</span>
+              {new Date(userData.createdAt).toLocaleString()}
             </div>
           </div>
         ) : (
           <p>Loading user details...</p>
         )}
-      </div>
+      </motion.div>
 
       {/* Badge Card */}
-      <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <motion.div
+        className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <h2 className="text-2xl font-semibold mb-4 text-center">🏅 Badges</h2>
         {badges.length > 0 ? (
           <ul className="space-y-3">
@@ -131,9 +137,15 @@ export default function ProfilePage() {
         ) : (
           <p className="text-center text-zinc-400">No badges yet.</p>
         )}
-      </div>
+      </motion.div>
 
-      <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
+      {/* Favorite Guides */}
+      <motion.div
+        className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
         <h2 className="text-2xl font-semibold mb-4 text-center">
           ⭐ Favorite Guides
         </h2>
@@ -168,19 +180,19 @@ export default function ProfilePage() {
                 </button>
               </li>
             ))}
-            {selectedGuide && (
-              <GuideDetails
-                guide={selectedGuide}
-                onClose={() => setSelectedGuide(null)}
-              />
-            )}
           </ul>
         ) : (
           <p className="text-center text-zinc-400">
-            Nimaš še shranjenih vodičev.
+            You don't have any saved guides yet.
           </p>
         )}
-      </div>
+        {selectedGuide && (
+          <GuideDetails
+            guide={selectedGuide}
+            onClose={() => setSelectedGuide(null)}
+          />
+        )}
+      </motion.div>
     </main>
   );
 }
