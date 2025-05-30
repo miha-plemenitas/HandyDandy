@@ -17,12 +17,14 @@ export default function ProfilePage() {
   useEffect(() => {
     if (session) {
       fetch("/api/users/favorites")
-        .then(res => res.json())
-        .then(async data => {
+        .then((res) => res.json())
+        .then(async (data) => {
           const ids = data.favorites || [];
           // Fetch all guides or fetch by IDs
-          const allGuides = await fetch("/api/guides").then(res => res.json());
-          const favGuides = allGuides.filter(g => ids.includes(g._id));
+          const allGuides = await fetch("/api/guides").then((res) =>
+            res.json()
+          );
+          const favGuides = allGuides.filter((g) => ids.includes(g._id));
           setFavoriteGuides(favGuides);
         });
     }
@@ -43,20 +45,6 @@ export default function ProfilePage() {
     }
   }, [session]);
 
-  const simulateBadgeEarn = async () => {
-    const repairId = prompt("Enter repair ID to simulate badge:");
-    const res = await fetch("/api/badges", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: session.user.email, repairId }),
-    });
-    if (res.ok) {
-      const { badge } = await res.json();
-      alert(`Badge earned: ${badge.title}`);
-      setBadges((prev) => [badge, ...prev]);
-    }
-  };
-
   if (!session) {
     return (
       <main className="px-6 py-8 text-white">
@@ -68,21 +56,20 @@ export default function ProfilePage() {
 
   const handleRemoveFavorite = async (guide) => {
     // Pretvori favoriteGuides v array _id-jev
-    const ids = favoriteGuides.map(g => g._id);
+    const ids = favoriteGuides.map((g) => g._id);
     // Odstrani kliknjen guide po _id
-    const newIds = ids.filter(id => id !== guide._id);
+    const newIds = ids.filter((id) => id !== guide._id);
 
     // Lokalen update (prikaži takoj brez refresh)
-    setFavoriteGuides(favoriteGuides.filter(g => g._id !== guide._id));
+    setFavoriteGuides(favoriteGuides.filter((g) => g._id !== guide._id));
 
     // Pošlji PATCH na backend (array id-jev!)
     try {
-      await axios.patch('/api/users/favorites', { favorites: newIds });
+      await axios.patch("/api/users/favorites", { favorites: newIds });
     } catch (err) {
       console.error("Napaka pri shranjevanju priljubljenih vodičev:", err);
     }
   };
-
 
   return (
     <main className="px-6 py-8 flex justify-center items-start gap-6 min-h-[80vh] text-white">
@@ -144,19 +131,15 @@ export default function ProfilePage() {
         ) : (
           <p className="text-center text-zinc-400">No badges yet.</p>
         )}
-        <button
-          onClick={simulateBadgeEarn}
-          className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg"
-        >
-          🎖 Simulate Earning Badge
-        </button>
       </div>
 
       <div className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-4 text-center">⭐ Favorite Guides</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-center">
+          ⭐ Favorite Guides
+        </h2>
         {favoriteGuides.length > 0 ? (
           <ul className="space-y-3">
-            {favoriteGuides.map(guide => (
+            {favoriteGuides.map((guide) => (
               <li
                 key={guide._id}
                 className="bg-zinc-700 p-3 rounded-lg flex items-center gap-4 cursor-pointer hover:bg-zinc-600 transition"
@@ -168,12 +151,14 @@ export default function ProfilePage() {
                   className="w-8 h-8 object-cover rounded"
                 />
                 <div>
-                  <div className="font-semibold text-zinc-100">{guide.title}</div>
+                  <div className="font-semibold text-zinc-100">
+                    {guide.title}
+                  </div>
                   <div className="text-zinc-400 text-sm">{guide.category}</div>
                 </div>
                 <button
                   className="ml-2 text-yellow-400 hover:text-gray-300 transition-colors p-1 rounded-full"
-                  onClick={e => {
+                  onClick={(e) => {
                     e.stopPropagation();
                     handleRemoveFavorite(guide);
                   }}
@@ -191,7 +176,9 @@ export default function ProfilePage() {
             )}
           </ul>
         ) : (
-          <p className="text-center text-zinc-400">Nimaš še shranjenih vodičev.</p>
+          <p className="text-center text-zinc-400">
+            Nimaš še shranjenih vodičev.
+          </p>
         )}
       </div>
     </main>

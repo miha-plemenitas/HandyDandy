@@ -1,23 +1,76 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import axios from "axios";
 import GuideComments from "./GuideComments";
 
 export default function GuideDetails({ guide, onClose }) {
   if (!guide) return null;
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString();
+  const { data: session } = useSession();
+  const [currentStepIndex, setCurrentStepIndex] = useState(0); // 1-based index
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      if (session?.user) {
+        const res = await axios.get(`/api/progress?userId=${session.user.id}`);
+        const all = res.data;
+        const match = all.find((p) => p.guideId === guide._id);
+        if (match) {
+          setCurrentStepIndex(match.currentStep); // Already 1-based
+        }
+      }
+    };
+    fetchProgress();
+  }, [session, guide._id]);
+
+  const handleToggleStep = async (stepIndexZeroBased) => {
+    if (!session?.user) {
+      alert("You must be logged in to track progress.");
+      return;
+    }
+
+    const stepIndex = stepIndexZeroBased + 1;
+
+    let newStepIndex = currentStepIndex;
+    if (stepIndex <= currentStepIndex) {
+      newStepIndex = stepIndex - 1; // uncheck (backtrack)
+    } else if (stepIndex === currentStepIndex + 1) {
+      newStepIndex = stepIndex; // advance
+    } else {
+      alert("Please complete previous steps first.");
+      return;
+    }
+
+    try {
+      const payload = {
+        userId: session.user.id,
+        guideId: guide._id,
+        currentStep: newStepIndex,
+        completed: newStepIndex === guide.steps.length,
+        badgeEarned: false,
+      };
+
+      await axios.post("/api/progress", payload);
+      setCurrentStepIndex(newStepIndex);
+    } catch (err) {
+      console.error("Error saving progress:", err);
+      alert("Error saving progress");
+    }
   };
 
-  function getYouTubeEmbedUrl(url) {
+  const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+
+  const getYouTubeEmbedUrl = (url) => {
     if (!url) return null;
     const videoIdMatch = url.match(
       /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/
     );
-    if (!videoIdMatch || videoIdMatch.length < 2) return null;
-    return `https://www.youtube.com/embed/${videoIdMatch[1]}?autoplay=1&mute=1`;
-  }
+    return videoIdMatch
+      ? `https://www.youtube.com/embed/${videoIdMatch[1]}?autoplay=1&mute=1`
+      : null;
+  };
 
   const embedUrl = getYouTubeEmbedUrl(guide.videoUrl);
 
@@ -29,10 +82,9 @@ export default function GuideDetails({ guide, onClose }) {
             <h2 className="text-3xl font-bold text-gray-800">{guide.title}</h2>
             <button
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-700 transition-colors"
+              className="text-gray-500 hover:text-gray-700"
             >
               <svg
-                xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -79,16 +131,64 @@ export default function GuideDetails({ guide, onClose }) {
                   Steps
                 </h3>
                 {guide.steps?.length ? (
-                  <ol className="space-y-3 list-decimal list-inside bg-gray-50 p-4 rounded-lg max-h-[400px] overflow-y-auto">
-                    {guide.steps.map((step, i) => (
-                      <li
-                        key={i}
-                        className="text-gray-600 pb-2 border-b border-gray-100 last:border-0"
-                      >
-                        {step}
-                      </li>
-                    ))}
-                  </ol>
+                  <>
+                    <div className="mb-3 w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                      <div
+                        className="bg-green-500 h-full transition-all duration-300"
+                        style={{
+                          width: `${
+                            (currentStepIndex / guide.steps.length) * 100
+                          }%`,
+                        }}
+                      />
+                    </div>
+                    <ul className="space-y-4">
+                      {guide.steps.map((step, i) => {
+                        const stepIndex = i + 1;
+                        const checked = stepIndex <= currentStepIndex;
+                        const disabled = stepIndex > currentStepIndex + 1;
+
+                        return (
+                          <li
+                            key={i}
+                            className={`flex items-center justify-between gap-4 px-4 py-3 rounded-lg border transition-shadow ${
+                              checked
+                                ? "bg-green-50 border-green-400 shadow-md"
+                                : "bg-white border-gray-200"
+                            } ${
+                              disabled
+                                ? "opacity-50 cursor-not-allowed"
+                                : "hover:shadow"
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => handleToggleStep(i)}
+                                disabled={disabled}
+                                className="w-5 h-5 accent-green-600"
+                              />
+                              <span
+                                className={`text-base ${
+                                  checked
+                                    ? "font-semibold text-green-700"
+                                    : "text-gray-700"
+                                }`}
+                              >
+                                {step}
+                              </span>
+                            </div>
+                            {checked && (
+                              <span className="text-sm font-medium text-green-600">
+                                ✓ Completed
+                              </span>
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </>
                 ) : (
                   <p className="text-gray-500">No steps provided.</p>
                 )}
@@ -104,7 +204,6 @@ export default function GuideDetails({ guide, onClose }) {
                   {guide.category || "Uncategorized"}
                 </p>
               </div>
-
               <div>
                 <h3 className="text-lg font-semibold mb-2 text-gray-800">
                   Tools
@@ -121,24 +220,26 @@ export default function GuideDetails({ guide, onClose }) {
                   <p className="text-gray-500">No tools listed.</p>
                 )}
               </div>
-
               <div>
                 <h3 className="text-lg font-semibold mb-2 text-gray-800">
                   Author & Date
                 </h3>
-                <p className="text-gray-600 mb-1">{guide.author || "Unknown"}</p>
+                <p className="text-gray-600 mb-1">
+                  {guide.author || "Unknown"}
+                </p>
                 <p className="text-gray-600">
                   {guide.createdAt ? formatDate(guide.createdAt) : "Unknown"}
                 </p>
               </div>
             </div>
           </div>
+
           <GuideComments guideId={guide._id} />
 
           <div className="mt-8 flex justify-end">
             <button
               onClick={onClose}
-              className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors duration-200 text-lg"
+              className="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-lg"
             >
               Close Guide
             </button>
