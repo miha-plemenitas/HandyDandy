@@ -59,6 +59,14 @@ export default function GuideDetails({ guide, onClose }) {
 
       if (newStepIndex === guide.steps.length) {
         setShowBadgeCelebration(true);
+
+        // Show browser notification
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("🏅 Badge Unlocked!", {
+            body: `You earned a badge for "${guide.title}"!`,
+            icon: "/images/tools-and-utensils_128.png",
+          });
+        }
       }
     } catch (err) {
       console.error("Error saving progress:", err);
@@ -70,11 +78,9 @@ export default function GuideDetails({ guide, onClose }) {
 
   const getYouTubeEmbedUrl = (url) => {
     if (!url) return null;
-    const videoIdMatch = url.match(
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/
-    );
-    return videoIdMatch
-      ? `https://www.youtube.com/embed/${videoIdMatch[1]}?autoplay=1&mute=1`
+    const match = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
+    return match
+      ? `https://www.youtube.com/embed/${match[1]}?autoplay=1&mute=1`
       : null;
   };
 
@@ -153,7 +159,7 @@ export default function GuideDetails({ guide, onClose }) {
                       <div className="flex items-center gap-4 bg-yellow-50 border border-yellow-300 p-4 rounded-xl shadow-inner my-4 animate-fade-in-up">
                         <img
                           src="/images/badge-icon-64.png"
-                          alt="Trophy"
+                          alt="Badge Icon"
                           className="w-12 h-12"
                         />
                         <p className="text-yellow-800 font-semibold text-lg">

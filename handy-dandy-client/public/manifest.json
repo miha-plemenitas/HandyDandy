@@ -1,7 +1,7 @@
 {
   "name": "HandyDandy PWA",
   "short_name": "HandyDandy",
-  "start_url": "/index.html",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
@@ -19,6 +19,26 @@
     {
       "src": "/images/tools-and-utensils_512.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/badge-icon-16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/badge-icon-64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/badge-icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/badge-icon.png",
+      "sizes": "32x32",
       "type": "image/png"
     }
   ]
