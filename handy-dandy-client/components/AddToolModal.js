@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 
+
 export default function AddToolModal({ show, onClose, onAdd, editTool, availableCategories = [] }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
@@ -10,6 +11,23 @@ export default function AddToolModal({ show, onClose, onAdd, editTool, available
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
   const [loading, setLoading] = useState(false);
+  const [autoImage, setAutoImage] = useState("");
+
+  useEffect(() => {
+    // Samo če je vpisan link in še ni uploadane slike
+    if (link && !preview) {
+      setAutoImage(""); // resetiraj staro, med fetchom
+      fetch(`/api/preview?url=${encodeURIComponent(link)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.image) setAutoImage(data.image);
+          else setAutoImage("");
+        })
+        .catch(() => setAutoImage(""));
+    } else {
+      setAutoImage("");
+    }
+  }, [link, preview]);
 
   useEffect(() => {
     if (editTool) {
@@ -28,11 +46,10 @@ export default function AddToolModal({ show, onClose, onAdd, editTool, available
     e.preventDefault();
     setLoading(true);
 
-    // Prava kategorija
     const trueCategory = category === "_custom" ? customCategory : category;
 
     // 1. Upload image, če je nova
-    let imageUrl = preview;
+    let imageUrl = preview || autoImage || "";
     if (image) {
       const formData = new FormData();
       formData.append("file", image);
@@ -42,7 +59,7 @@ export default function AddToolModal({ show, onClose, onAdd, editTool, available
         body: formData
       });
       const imgData = await imgRes.json();
-      imageUrl = imgData?.url || preview;
+      imageUrl = imgData?.url || preview || autoImage || "";
     }
 
     const body = { name, category: trueCategory, link, image: imageUrl };
@@ -62,7 +79,7 @@ export default function AddToolModal({ show, onClose, onAdd, editTool, available
       } else {
         alert(data?.error || "Failed to add tool.");
       }
-    // UREJANJE
+      // UREJANJE
     } else {
       const res = await fetch(`/api/tools?id=${editTool._id}`, {
         method: "PUT",
@@ -79,6 +96,7 @@ export default function AddToolModal({ show, onClose, onAdd, editTool, available
       }
     }
   }
+
 
   function handleFileChange(e) {
     const file = e.target.files[0];
@@ -113,78 +131,82 @@ export default function AddToolModal({ show, onClose, onAdd, editTool, available
 
           <div className="space-y-6">
             {/* Tool Name */}
-            <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
-                Name*
-              </label>
+
+            <label className="block text-lg font-semibold mb-2 text-gray-800">
+              Name*
+            </label>
+            <input
+              type="text"
+              placeholder="Tool name"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required
+            />
+          </div>
+
+          {/* Category - DROPDOWN ali vnos */}
+          <div>
+            <label className="block text-lg font-semibold mb-2 text-gray-800">
+              Category*
+            </label>
+            <select
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={category}
+              onChange={e => setCategory(e.target.value)}
+              required
+            >
+              <option value="">Select category</option>
+              {availableCategories.map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+              <option value="_custom">+ Add new category</option>
+            </select>
+            {category === "_custom" && (
               <input
                 type="text"
-                placeholder="Tool name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={name}
-                onChange={e => setName(e.target.value)}
+                className="mt-2 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter new category"
+                value={customCategory}
+                onChange={e => setCustomCategory(e.target.value)}
                 required
               />
-            </div>
+            )}
+          </div>
 
-            {/* Category - DROPDOWN ali vnos */}
-            <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
-                Category*
-              </label>
-              <select
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={category}
-                onChange={e => setCategory(e.target.value)}
-                required
-              >
-                <option value="">Select category</option>
-                {availableCategories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-                <option value="_custom">+ Add new category</option>
-              </select>
-              {category === "_custom" && (
-                <input
-                  type="text"
-                  className="mt-2 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter new category"
-                  value={customCategory}
-                  onChange={e => setCustomCategory(e.target.value)}
-                  required
-                />
-              )}
-            </div>
+          {/* Buy Link */}
+          <div>
+            <label className="block text-lg font-semibold mb-2 text-gray-800">
+              Buy Link
+            </label>
+            <input
+              type="url"
+              placeholder="https://example.com/tool"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={link}
+              onChange={e => setLink(e.target.value)}
+            />
+          </div>
 
-            {/* Buy Link */}
-            <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
-                Buy Link
-              </label>
-              <input
-                type="url"
-                placeholder="https://example.com/tool"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={link}
-                onChange={e => setLink(e.target.value)}
+          {/* Image upload & preview */}
+          <div>
+            <label className="block text-lg font-semibold mb-2 text-gray-800">
+              Image (optional)
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              className="block w-full text-sm border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              onChange={handleFileChange}
+            />
+            {/* Tukaj prikažeš predogled slike iz upload-a ALI iz linka */}
+            {(preview || autoImage) && (
+              <img
+                src={preview || autoImage}
+                alt="Preview"
+                className="mt-3 rounded-xl w-28 h-28 object-contain border border-gray-200 shadow"
               />
-            </div>
-
-            {/* Image upload & preview */}
-            <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
-                Image (optional)
-              </label>
-              <input
-                type="file"
-                accept="image/*"
-                className="block w-full text-sm border-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                onChange={handleFileChange}
-              />
-              {preview && (
-                <img src={preview} alt="Preview" className="mt-3 rounded-xl w-28 h-28 object-contain border border-gray-200 shadow" />
-              )}
-            </div>
+            )}
           </div>
 
           <div className="mt-8 flex justify-end space-x-4">
