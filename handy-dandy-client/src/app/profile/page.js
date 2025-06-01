@@ -6,6 +6,7 @@ import GuideDetails from "@/components/GuideDetails";
 import { FaStar } from "react-icons/fa";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { User, BadgeCheck, Star } from "lucide-react"; // ✅ FIXED HERE
 
 export default function ProfilePage() {
   const [favoriteGuides, setFavoriteGuides] = useState([]);
@@ -21,7 +22,6 @@ export default function ProfilePage() {
         .then((res) => res.json())
         .then(async (data) => {
           const ids = data.favorites || [];
-          // Fetch all guides or fetch by IDs
           const allGuides = await fetch("/api/guides").then((res) =>
             res.json()
           );
@@ -60,7 +60,7 @@ export default function ProfilePage() {
 
   if (!session) {
     return (
-      <main className="px-6 py-8 text-white">
+      <main className="px-6 py-8 text-gray-800">
         <h1 className="text-2xl font-semibold">Profile</h1>
         <p>Please login to view your profile.</p>
       </main>
@@ -68,131 +68,148 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="px-6 py-8 flex justify-center items-start gap-6 flex-wrap min-h-[80vh] text-white">
-      {/* User Card */}
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-gray-900">
+      {/* Page header */}
       <motion.div
-        className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
-        initial={{ opacity: 0, y: 30 }}
+        className="text-center mb-12"
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ duration: 0.6 }}
       >
-        <div className="flex flex-col items-center text-center">
-          <div className="text-5xl mb-4">👤</div>
-          <h1 className="text-3xl font-bold mb-2">User Profile</h1>
-          <p className="text-zinc-400 mb-6">Welcome to your dashboard</p>
+        <div className="flex justify-center items-center gap-3 mb-3">
+          <User className="w-8 h-8 text-yellow-600" />
+          <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
+            Profile
+          </h1>
         </div>
-
-        {userData ? (
-          <div className="space-y-4 text-lg">
-            <div>
-              <span className="font-semibold text-zinc-300">👨‍💼 Name:</span>{" "}
-              {userData.username}
-            </div>
-            <div>
-              <span className="font-semibold text-zinc-300">📧 Email:</span>{" "}
-              {userData.email}
-            </div>
-            <div>
-              <span className="font-semibold text-zinc-300">📅 Created:</span>{" "}
-              {new Date(userData.createdAt).toLocaleString()}
-            </div>
-          </div>
-        ) : (
-          <p>Loading user details...</p>
-        )}
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          View your user information, earned badges and saved guides.
+        </p>
       </motion.div>
 
-      {/* Badge Card */}
-      <motion.div
-        className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <h2 className="text-2xl font-semibold mb-4 text-center">🏅 Badges</h2>
-        {badges.length > 0 ? (
-          <ul className="space-y-3">
-            {badges.map((badge, i) => (
-              <li
-                key={i}
-                className="bg-zinc-700 p-3 rounded-lg flex items-center gap-4"
-              >
-                {/* Static badge icon */}
-                <img
-                  src="/images/badge-icon.png"
-                  alt="Badge Icon"
-                  className="w-8 h-8"
-                />
-                <div>
-                  <div className="font-semibold text-zinc-100">
-                    {badge.title}
-                  </div>
-                  <div className="text-zinc-400 text-sm">
-                    Earned: {new Date(badge.earnedAt).toLocaleDateString()}
-                  </div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-center text-zinc-400">No badges yet.</p>
-        )}
-      </motion.div>
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* User Info */}
+        <motion.div
+          className="bg-white shadow-md border border-gray-200 rounded-xl p-6 h-full"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <User className="text-blue-500 w-6 h-6" />
+            User Info
+          </h2>
+          {userData ? (
+            <div className="space-y-3 text-sm text-gray-700">
+              <div>
+                <span className="font-medium">Name:</span> {userData.username}
+              </div>
+              <div>
+                <span className="font-medium">Email:</span> {userData.email}
+              </div>
+              <div>
+                <span className="font-medium">Created:</span>{" "}
+                {new Date(userData.createdAt).toLocaleString()}
+              </div>
+            </div>
+          ) : (
+            <p>Loading user details...</p>
+          )}
+        </motion.div>
 
-      {/* Favorite Guides */}
-      <motion.div
-        className="bg-zinc-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-      >
-        <h2 className="text-2xl font-semibold mb-4 text-center">
-          ⭐ Favorite Guides
-        </h2>
-        {favoriteGuides.length > 0 ? (
-          <ul className="space-y-3">
-            {favoriteGuides.map((guide) => (
-              <li
-                key={guide._id}
-                className="bg-zinc-700 p-3 rounded-lg flex items-center gap-4 cursor-pointer hover:bg-zinc-600 transition"
-                onClick={() => setSelectedGuide(guide)}
-              >
-                <img
-                  src={guide.images?.[0] || "/images/placeholder.png"}
-                  alt="Guide"
-                  className="w-8 h-8 object-cover rounded"
-                />
-                <div>
-                  <div className="font-semibold text-zinc-100">
-                    {guide.title}
-                  </div>
-                  <div className="text-zinc-400 text-sm">{guide.category}</div>
-                </div>
-                <button
-                  className="ml-2 text-yellow-400 hover:text-gray-300 transition-colors p-1 rounded-full"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemoveFavorite(guide);
-                  }}
-                  title="Remove from favorites"
+        {/* Badges */}
+        <motion.div
+          className="bg-white shadow-md border border-gray-200 rounded-xl p-6 h-full"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <BadgeCheck className="text-green-500 w-6 h-6" />
+            Badges
+          </h2>
+          {badges.length > 0 ? (
+            <ul className="space-y-3 text-sm">
+              {badges.map((badge, i) => (
+                <li
+                  key={i}
+                  className="border border-gray-200 rounded-md px-3 py-2 bg-gray-50 flex items-center gap-3"
                 >
-                  <FaStar size={22} />
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-center text-zinc-400">
-            You don't have any saved guides yet.
-          </p>
-        )}
-        {selectedGuide && (
-          <GuideDetails
-            guide={selectedGuide}
-            onClose={() => setSelectedGuide(null)}
-          />
-        )}
-      </motion.div>
+                  <img
+                    src={badge.iconUrl || "/images/badge-icon.png"}
+                    alt="Badge"
+                    className="w-7 h-7"
+                  />
+                  <div>
+                    <div className="font-medium text-gray-800">
+                      {badge.title}
+                    </div>
+                    <div className="text-gray-500 text-xs">
+                      Earned: {new Date(badge.earnedAt).toLocaleDateString()}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500">No badges yet.</p>
+          )}
+        </motion.div>
+
+        {/* Favorites */}
+        <motion.div
+          className="bg-white shadow-md border border-gray-200 rounded-xl p-6 h-full"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+            <Star className="text-yellow-500 w-6 h-6" />
+            Favorite Guides
+          </h2>
+          {favoriteGuides.length > 0 ? (
+            <ul className="space-y-3">
+              {favoriteGuides.map((guide) => (
+                <li
+                  key={guide._id}
+                  className="bg-gray-50 border border-gray-200 rounded-md px-3 py-2 flex items-center justify-between hover:bg-gray-100 transition cursor-pointer"
+                  onClick={() => setSelectedGuide(guide)}
+                >
+                  <div>
+                    <div className="font-medium text-gray-800">
+                      {guide.title}
+                    </div>
+                    <div className="text-gray-500 text-sm">
+                      {guide.category}
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemoveFavorite(guide);
+                    }}
+                    title="Remove"
+                    className="text-yellow-500 hover:text-gray-400"
+                  >
+                    <FaStar />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-gray-500 text-sm">
+              You don’t have any saved guides yet.
+            </p>
+          )}
+          {selectedGuide && (
+            <GuideDetails
+              guide={selectedGuide}
+              onClose={() => setSelectedGuide(null)}
+            />
+          )}
+        </motion.div>
+      </div>
     </main>
   );
 }

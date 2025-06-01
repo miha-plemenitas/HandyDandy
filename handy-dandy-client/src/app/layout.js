@@ -30,15 +30,18 @@ export default function RootLayout({ children }) {
           type="image/png"
           href="/images/tools-and-utensils_128.png"
         />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#4CAF50" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white text-gray-900`}
       >
         <SessionWrapper>
           <Navbar />
           <VoiceControl />
-          <main className="max-w-6xl mx-auto px-6 py-8">{children}</main>
+          <main className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            {children}
+          </main>
         </SessionWrapper>
       </body>
     </html>
