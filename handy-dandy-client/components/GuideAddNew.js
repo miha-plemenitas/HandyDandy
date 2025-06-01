@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export default function GuideAddNew({ onClose, showNotification }) {
   const [formData, setFormData] = useState({
@@ -13,6 +13,23 @@ export default function GuideAddNew({ onClose, showNotification }) {
     tools: [""],
     author: "",
   });
+  const [availableTools, setAvailableTools] = useState([]);
+
+  // Fetch all tools on mount
+  useEffect(() => {
+    async function fetchTools() {
+      try {
+        const res = await fetch("/api/tools");
+        if (res.ok) {
+          const data = await res.json();
+          setAvailableTools(data);
+        }
+      } catch (e) {
+        // Ignore
+      }
+    }
+    fetchTools();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -229,12 +246,18 @@ export default function GuideAddNew({ onClose, showNotification }) {
               <div className="space-y-3">
                 {formData.tools.map((tool, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <input
+                    <select
                       value={tool}
-                      onChange={(e) => handleArrayChange("tools", i, e.target.value)}
+                      onChange={e => handleArrayChange("tools", i, e.target.value)}
                       className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Tool name"
-                    />
+                    >
+                      <option value="">Select tool</option>
+                      {availableTools.map(t => (
+                        <option key={t._id || t.name} value={t.name}>
+                          {t.name}
+                        </option>
+                      ))}
+                    </select>
                     <button
                       type="button"
                       onClick={() => removeArrayItem("tools", i)}
@@ -250,7 +273,6 @@ export default function GuideAddNew({ onClose, showNotification }) {
                 onClick={() => addArrayItem("tools")}
                 className="mt-3 px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 rounded-lg flex items-center gap-1"
               >
-                
                 + Add Tool
               </button>
             </div>

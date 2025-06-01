@@ -1,16 +1,32 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-export default function GuideEdit({ 
-  editFormData, 
-  setEditFormData, 
-  onSave, 
+export default function GuideEdit({
+  editFormData,
+  setEditFormData,
+  onSave,
   onCancel,
   addArrayItem,
   removeArrayItem,
   handleArrayChange
 }) {
+  const [availableTools, setAvailableTools] = useState([]);
+
+  useEffect(() => {
+    async function fetchTools() {
+      try {
+        const res = await fetch("/api/tools");
+        if (res.ok) {
+          const data = await res.json();
+          setAvailableTools(data);
+        }
+      } catch (e) {
+        // Ignore fetch errors for now
+      }
+    }
+    fetchTools();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -128,7 +144,7 @@ export default function GuideEdit({
                         onClick={() => removeArrayItem('images', index)}
                         className="p-2 text-red-500 hover:text-red-700 rounded-full hover:bg-red-50"
                       >
-                       x
+                        x
                       </button>
                     </div>
                   ))}
@@ -197,13 +213,18 @@ export default function GuideEdit({
               <div className="space-y-3">
                 {editFormData.tools.map((tool, index) => (
                   <div key={index} className="flex items-center gap-2">
-                    <input
-                      type="text"
+                    <select
                       value={tool}
-                      onChange={(e) => handleArrayChange('tools', index, e.target.value)}
+                      onChange={e => handleArrayChange('tools', index, e.target.value)}
                       className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Tool name"
-                    />
+                    >
+                      <option value="">Select tool</option>
+                      {availableTools.map(t => (
+                        <option key={t._id || t.name} value={t.name}>
+                          {t.name}
+                        </option>
+                      ))}
+                    </select>
                     <button
                       type="button"
                       onClick={() => removeArrayItem('tools', index)}

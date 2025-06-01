@@ -1,3 +1,5 @@
+"use client"
+
 import { FiExternalLink, FiEdit2, FiTrash2 } from "react-icons/fi";
 
 export default function ToolCard({ tool, session, onEdit, onDelete }) {
