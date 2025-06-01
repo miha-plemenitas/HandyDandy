@@ -134,6 +134,7 @@ export default function ToolsSection() {
                     show={showAddForm}
                     onClose={() => setShowAddForm(false)}
                     onAdd={handleNewToolAdded}
+                    availableCategories={availableCategories}
                 />
             )}
             {editTool && (
@@ -142,6 +143,7 @@ export default function ToolsSection() {
                     onClose={() => setEditTool(null)}
                     onAdd={handleUpdateTool}
                     editTool={editTool}
+                    availableCategories={availableCategories}
                 />
             )}
         </section>

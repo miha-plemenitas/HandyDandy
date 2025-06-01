@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 
-export default function AddToolModal({ show, onClose, onAdd, editTool }) {
+export default function AddToolModal({ show, onClose, onAdd, editTool, availableCategories = [] }) {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
+  const [customCategory, setCustomCategory] = useState(""); // za novo kategorijo
   const [link, setLink] = useState("");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState("");
@@ -12,17 +13,21 @@ export default function AddToolModal({ show, onClose, onAdd, editTool }) {
     if (editTool) {
       setName(editTool.name || "");
       setCategory(editTool.category || "");
+      setCustomCategory("");
       setLink(editTool.link || "");
       setPreview(editTool.image || "");
       setImage(null);
     } else {
-      setName(""); setCategory(""); setLink(""); setPreview(""); setImage(null);
+      setName(""); setCategory(""); setCustomCategory(""); setLink(""); setPreview(""); setImage(null);
     }
   }, [editTool, show]);
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
+
+    // Prava kategorija
+    const trueCategory = category === "_custom" ? customCategory : category;
 
     // 1. Upload image, če je nova
     let imageUrl = preview;
@@ -38,7 +43,7 @@ export default function AddToolModal({ show, onClose, onAdd, editTool }) {
       imageUrl = imgData?.url || preview;
     }
 
-    const body = { name, category, link, image: imageUrl };
+    const body = { name, category: trueCategory, link, image: imageUrl };
 
     // DODAJANJE
     if (!editTool) {
@@ -65,7 +70,7 @@ export default function AddToolModal({ show, onClose, onAdd, editTool }) {
       const data = await res.json();
       setLoading(false);
       if (res.ok) {
-        onAdd(data); // posodobi v stateu
+        onAdd(data);
         onClose();
       } else {
         alert(data?.error || "Failed to update tool.");
@@ -120,19 +125,33 @@ export default function AddToolModal({ show, onClose, onAdd, editTool }) {
               />
             </div>
 
-            {/* Category */}
+            {/* Category - DROPDOWN ali vnos */}
             <div>
               <label className="block text-lg font-semibold mb-2 text-gray-800">
                 Category*
               </label>
-              <input
-                type="text"
-                placeholder="e.g. Hand tool, Plumbing, Safety"
+              <select
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 value={category}
                 onChange={e => setCategory(e.target.value)}
                 required
-              />
+              >
+                <option value="">Select category</option>
+                {availableCategories.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+                <option value="_custom">+ Add new category</option>
+              </select>
+              {category === "_custom" && (
+                <input
+                  type="text"
+                  className="mt-2 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="Enter new category"
+                  value={customCategory}
+                  onChange={e => setCustomCategory(e.target.value)}
+                  required
+                />
+              )}
             </div>
 
             {/* Buy Link */}
@@ -177,7 +196,7 @@ export default function AddToolModal({ show, onClose, onAdd, editTool }) {
             <button
               type="submit"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 disabled:bg-blue-300"
-              disabled={loading}
+              disabled={loading || (category === "_custom" && !customCategory)}
             >
               {loading ? (editTool ? "Saving..." : "Adding...") : editTool ? "Save Changes" : "Add Tool"}
             </button>
@@ -187,4 +206,3 @@ export default function AddToolModal({ show, onClose, onAdd, editTool }) {
     </div>
   );
 }
-
