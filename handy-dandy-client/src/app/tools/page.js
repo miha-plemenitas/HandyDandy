@@ -1,34 +1,33 @@
 "use client";
 
 import { motion } from "framer-motion";
+import ToolsSection from "@/components/ToolsSection";
 
 export default function ToolsPage() {
   return (
-    <main className="w-full max-w-6xl mx-auto px-6 py-16 text-center text-gray-900">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-gray-900">
       <motion.div
+        className="text-center mb-12"
         initial={{ opacity: 0, y: -40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="text-center mb-12"
       >
         <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl mb-2">
           🧰 Tools & Materials
         </h1>
         <p className="text-lg text-gray-600">
-          Discover recommended tools and materials to get your repairs done
-          right. We’re working hard to bring you curated lists and links soon!
+          Discover recommended tools and materials to get your repairs done right.<br />
+          Search, filter, and add new tools below!
         </p>
       </motion.div>
 
       <motion.div
-        className="mt-20"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.5 }}
+        className="bg-white shadow-lg rounded-xl p-6 sm:p-8"
+        initial={{ opacity: 0, scale: 0.97 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.3 }}
       >
-        <div className="inline-block px-6 py-4 bg-blue-50 text-blue-700 border border-blue-200 rounded-xl shadow-sm">
-          🛠️ Tool suggestions and recommendations coming soon...
-        </div>
+        <ToolsSection />
       </motion.div>
     </main>
   );
