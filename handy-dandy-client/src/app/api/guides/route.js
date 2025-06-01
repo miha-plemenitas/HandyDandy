@@ -38,7 +38,7 @@ export async function PUT(req) {
     const updatedGuide = await Guide.findByIdAndUpdate(
       id,
       updateData,
-      { new: true } // Return the updated document
+      { new: true }
     );
 
     if (!updatedGuide) {

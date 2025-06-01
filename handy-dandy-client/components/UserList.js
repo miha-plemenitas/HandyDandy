@@ -33,7 +33,7 @@ export default function UserList({ onEdit, showNotification, searchTerm }) {
     return () => {
       didCancel = true;
     };
-  }, []); // ✅ Empty dependency to avoid infinite loop
+  }, []);
 
   const deleteUser = async (id) => {
     if (!confirm("Are you sure you want to delete this user?")) return;

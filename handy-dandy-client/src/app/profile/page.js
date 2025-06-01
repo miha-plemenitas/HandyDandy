@@ -6,7 +6,7 @@ import GuideDetails from "@/components/GuideDetails";
 import { FaStar } from "react-icons/fa";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { User, BadgeCheck, Star } from "lucide-react"; // ✅ FIXED HERE
+import { User, BadgeCheck, Star } from "lucide-react";
 
 export default function ProfilePage() {
   const [favoriteGuides, setFavoriteGuides] = useState([]);

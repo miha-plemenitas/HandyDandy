@@ -27,7 +27,7 @@ export const authOptions = {
     async session({ session }) {
       await connectDB();
       const user = await User.findOne({ email: session.user.email });
-      session.user.id = user._id.toString(); // ✅ changed from _id to id
+      session.user.id = user._id.toString();
       return session;
     },
   },

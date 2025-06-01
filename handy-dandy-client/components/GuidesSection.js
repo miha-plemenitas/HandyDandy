@@ -82,7 +82,7 @@ export default function GuidesSection({ showNotification }) {
       {showAddForm && (
         <GuideAddNew
         onClose={() => setShowAddForm(false)}
-        onGuideAdded={handleNewGuideAdded} // 👈 This is already correct
+        onGuideAdded={handleNewGuideAdded}
         showNotification={showNotification}
       />
       
