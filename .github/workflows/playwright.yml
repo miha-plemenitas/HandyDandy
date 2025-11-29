@@ -1,0 +1,69 @@
+name: Playwright Tests
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:6.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --eval 'db.adminCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Checkout repository
+      - uses: actions/checkout@v4
+
+      # Set up Node.js environment
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      # Install dependencies inside handy-dandy-client/
+      - name: Install dependencies
+        working-directory: handy-dandy-client
+        run: npm install
+
+      # Install Playwright browsers
+      - name: Install Playwright Browsers
+        working-directory: handy-dandy-client
+        run: npx playwright install --with-deps
+
+      # Build Next.js app
+      - name: Build Next.js app
+        working-directory: handy-dandy-client
+        run: npm run build
+
+      # Start Next.js server on port 3000
+      - name: Start Next.js server
+        working-directory: handy-dandy-client
+        run: |
+          npm start &
+          echo "Waiting for Next.js to start..."
+          npx wait-on http://localhost:3000
+
+      # Run Playwright tests
+      - name: Run Playwright tests
+        working-directory: handy-dandy-client
+        run: npx playwright test --reporter=html
+
+      # Upload HTML test report
+      - name: Upload Playwright Report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: handy-dandy-client/playwright-report/
+          retention-days: 30
