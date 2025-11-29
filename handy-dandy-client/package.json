@@ -24,7 +24,9 @@
     "web-push": "^3.6.7"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@tailwindcss/postcss": "^4.1.6",
+    "@types/node": "^24.10.1",
     "tailwindcss": "^4"
   }
 }

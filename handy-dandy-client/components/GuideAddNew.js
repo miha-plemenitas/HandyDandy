@@ -15,7 +15,6 @@ export default function GuideAddNew({ onClose, showNotification }) {
   });
   const [availableTools, setAvailableTools] = useState([]);
 
-  // Fetch all tools on mount
   useEffect(() => {
     async function fetchTools() {
       try {
@@ -24,9 +23,7 @@ export default function GuideAddNew({ onClose, showNotification }) {
           const data = await res.json();
           setAvailableTools(data);
         }
-      } catch (e) {
-        // Ignore
-      }
+      } catch (e) {}
     }
     fetchTools();
   }, []);
@@ -99,10 +96,14 @@ export default function GuideAddNew({ onClose, showNotification }) {
           <div className="space-y-6">
             {/* Title */}
             <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
+              <label
+                htmlFor="title"
+                className="block text-lg font-semibold mb-2 text-gray-800"
+              >
                 Title*
               </label>
               <input
+                id="title"
                 type="text"
                 name="title"
                 value={formData.title}
@@ -114,10 +115,14 @@ export default function GuideAddNew({ onClose, showNotification }) {
 
             {/* Description */}
             <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
+              <label
+                htmlFor="description"
+                className="block text-lg font-semibold mb-2 text-gray-800"
+              >
                 Description
               </label>
               <textarea
+                id="description"
                 name="description"
                 rows={4}
                 value={formData.description}
@@ -129,7 +134,10 @@ export default function GuideAddNew({ onClose, showNotification }) {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Steps */}
               <div>
-                <label className="block text-lg font-semibold mb-2 text-gray-800">
+                <label
+                  htmlFor="steps"
+                  className="block text-lg font-semibold mb-2 text-gray-800"
+                >
                   Steps
                 </label>
                 <div className="space-y-3">
@@ -137,8 +145,11 @@ export default function GuideAddNew({ onClose, showNotification }) {
                     <div key={i} className="flex items-center gap-2">
                       <span className="text-gray-500">{i + 1}.</span>
                       <input
+                        id={`step-${i}`}
                         value={step}
-                        onChange={(e) => handleArrayChange("steps", i, e.target.value)}
+                        onChange={(e) =>
+                          handleArrayChange("steps", i, e.target.value)
+                        }
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder={`Enter step ${i + 1}`}
                       />
@@ -163,15 +174,21 @@ export default function GuideAddNew({ onClose, showNotification }) {
 
               {/* Images */}
               <div>
-                <label className="block text-lg font-semibold mb-2 text-gray-800">
+                <label
+                  htmlFor="images"
+                  className="block text-lg font-semibold mb-2 text-gray-800"
+                >
                   Image URLs
                 </label>
                 <div className="space-y-3">
                   {formData.images.map((url, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <input
+                        id={`image-${i}`}
                         value={url}
-                        onChange={(e) => handleArrayChange("images", i, e.target.value)}
+                        onChange={(e) =>
+                          handleArrayChange("images", i, e.target.value)
+                        }
                         className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         placeholder="Paste image URL"
                       />
@@ -197,10 +214,14 @@ export default function GuideAddNew({ onClose, showNotification }) {
 
             {/* Video */}
             <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
+              <label
+                htmlFor="videoUrl"
+                className="block text-lg font-semibold mb-2 text-gray-800"
+              >
                 Video URL
               </label>
               <input
+                id="videoUrl"
                 name="videoUrl"
                 value={formData.videoUrl}
                 onChange={handleInputChange}
@@ -212,10 +233,14 @@ export default function GuideAddNew({ onClose, showNotification }) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Category */}
               <div>
-                <label className="block text-lg font-semibold mb-2 text-gray-800">
+                <label
+                  htmlFor="category"
+                  className="block text-lg font-semibold mb-2 text-gray-800"
+                >
                   Category*
                 </label>
                 <input
+                  id="category"
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
@@ -226,10 +251,14 @@ export default function GuideAddNew({ onClose, showNotification }) {
 
               {/* Author */}
               <div>
-                <label className="block text-lg font-semibold mb-2 text-gray-800">
+                <label
+                  htmlFor="author"
+                  className="block text-lg font-semibold mb-2 text-gray-800"
+                >
                   Author
                 </label>
                 <input
+                  id="author"
                   name="author"
                   value={formData.author}
                   onChange={handleInputChange}
@@ -240,19 +269,26 @@ export default function GuideAddNew({ onClose, showNotification }) {
 
             {/* Tools */}
             <div>
-              <label className="block text-lg font-semibold mb-2 text-gray-800">
+              <label
+                htmlFor="tools"
+                className="block text-lg font-semibold mb-2 text-gray-800"
+              >
                 Tools
               </label>
+
               <div className="space-y-3">
                 {formData.tools.map((tool, i) => (
                   <div key={i} className="flex items-center gap-2">
                     <select
+                      id={`tool-${i}`}
                       value={tool}
-                      onChange={e => handleArrayChange("tools", i, e.target.value)}
+                      onChange={(e) =>
+                        handleArrayChange("tools", i, e.target.value)
+                      }
                       className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="">Select tool</option>
-                      {availableTools.map(t => (
+                      {availableTools.map((t) => (
                         <option key={t._id || t.name} value={t.name}>
                           {t.name}
                         </option>
@@ -268,6 +304,7 @@ export default function GuideAddNew({ onClose, showNotification }) {
                   </div>
                 ))}
               </div>
+
               <button
                 type="button"
                 onClick={() => addArrayItem("tools")}
