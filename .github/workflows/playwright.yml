@@ -34,7 +34,7 @@ jobs:
       # Install dependencies INSIDE CLIENT FOLDER
       - name: Install dependencies
         working-directory: handy-dandy-client
-        run: npm ci
+        run: npm install
 
       # Install Playwright browsers
       - name: Install Playwright Browsers
