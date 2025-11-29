@@ -12,24 +12,28 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      NEXT_PUBLIC_API_URL: "http://localhost:5001/api"
+      # Core config for CI (Next.js runs on 3000)
+      PORT: 3000
+      NEXTAUTH_URL: "http://localhost:3000"
+      NEXT_PUBLIC_API_URL: "http://localhost:3000/api"
 
-      PORT: 5001
+      # Backend secrets (from GitHub Secrets)
       MONGO_URI: ${{ secrets.MONGO_URI }}
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
-
-      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-      GOOGLE_CALLBACK_URL: "http://localhost:5001/api/users/auth/google/callback"
-
       SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
 
+      # OAuth
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      GOOGLE_CALLBACK_URL: "http://localhost:3000/api/users/auth/google/callback"
+
+      # Notifications
       VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
       VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
       NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
 
+      # NextAuth
       NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-      NEXTAUTH_URL: "http://localhost:5001"
 
     services:
       mongodb:
@@ -43,35 +47,43 @@ jobs:
           --health-retries 5
 
     steps:
+      # Checkout code
       - uses: actions/checkout@v4
 
+      # Setup Node
       - uses: actions/setup-node@v4
         with:
           node-version: lts/*
 
+      # Install dependencies
       - name: Install dependencies
         working-directory: handy-dandy-client
         run: npm install
 
+      # Install Playwright browsers
       - name: Install Playwright Browsers
         working-directory: handy-dandy-client
         run: npx playwright install --with-deps
 
+      # Build Next.js app
       - name: Build Next.js app
         working-directory: handy-dandy-client
         run: npm run build
 
+      # Start Next.js server on port 3000
       - name: Start Next.js server
         working-directory: handy-dandy-client
         run: |
           npm start &
-          echo "Waiting for Next.js to start..."
-          npx wait-on http://localhost:5001
+          echo "Waiting for Next.js to start on port 3000..."
+          npx wait-on http://localhost:3000
 
+      # Run Playwright tests
       - name: Run Playwright tests
         working-directory: handy-dandy-client
         run: npx playwright test --reporter=html
 
+      # Upload Playwright Report
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
