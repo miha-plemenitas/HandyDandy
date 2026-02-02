@@ -20,7 +20,7 @@ test("User can search for guides by title", async ({ page, baseURL }) => {
   const searchInput = page.getByPlaceholder("Search by title or category");
 
   // ------------------------------
-  // 🔍 TEST — Search by title "Test"
+  // Search by title "Test"
   // ------------------------------
   await searchInput.fill("Test");
   await page.waitForTimeout(400); // Allow React to filter

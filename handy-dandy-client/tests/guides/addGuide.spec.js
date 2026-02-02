@@ -16,7 +16,6 @@ test("User can add a new guide successfully", async ({ page, baseURL }) => {
   const modalTitle = page.getByRole("heading", { name: /add new guide/i });
   await expect(modalTitle).toBeVisible();
 
-  // ⭐ MUST BE UNIQUE
   const uniqueTitle = `Playwright Guide ${Date.now()}`;
 
   // Fill
@@ -51,7 +50,7 @@ test("User can add a new guide successfully", async ({ page, baseURL }) => {
   // Wait for modal to close
   await expect(modalTitle).toBeHidden({ timeout: 7000 });
 
-  // ⭐ MASSIVE FIX — reload to fetch the new DB state
+  // Reload to fetch the new DB state
   await page.reload();
   await page.waitForLoadState("domcontentloaded");
   await page.waitForTimeout(500);
@@ -60,11 +59,11 @@ test("User can add a new guide successfully", async ({ page, baseURL }) => {
   await page.getByRole("combobox").selectOption("");
   await page.waitForTimeout(300);
 
-  // ⭐ Scroll to top (WebKit)
+  // Scroll to top (WebKit)
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.waitForTimeout(300);
 
-  // ⭐ Check new guide
+  // Check new guide
   const newGuide = page.getByRole("heading", { name: uniqueTitle }).first();
   await expect(newGuide).toBeVisible({ timeout: 7000 });
 
